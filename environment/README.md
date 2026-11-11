@@ -28,6 +28,8 @@ Run every script from the repository root with the prefix `.venv/bin/python`, fo
 
 Newer releases of the packages were not tried.
 
+`./verify.sh` runs, in one command, the self-test of the $S_3$ code and every script of `code/figure-reproduction/` that works from the stored data, and reports each as OK or FAIL (about half a minute). `./verify.sh full` adds the two $S_3$ regenerations, about 9 minutes each. It uses `.venv/bin/python` when that exists, and the variable `PYTHON` names another interpreter. GitHub Actions runs `./verify.sh quick` on every push, on Ubuntu with Python 3.14 and the same pinned packages (`.github/workflows/verify.yml`).
+
 ## Other tools
 
 | Software | Version tested | Used for | Required? |
@@ -61,6 +63,7 @@ The result has 77 pages, with no errors and no undefined references.
 | `.venv/bin/python code/figure-reproduction/check_fib_generators_smallL.py` | repository root | `RESULT: PASS` | about 3 s |
 | `.venv/bin/python code/figure-reproduction/fig09_u1_threshold_check.py` | repository root | `RESULT: PASS` | instant |
 | `.venv/bin/python code/s3/python/s3_chain.py` | repository root | `self-test passed` | 2026-11-11, under a second |
+| `./verify.sh quick` | repository root | `0 failed` | 2026-11-11, 7 checks in about 15 s |
 | `.venv/bin/python code/figure-reproduction/s3_from_stored_ensembles.py` | repository root | `RESULT: PASS` | 2026-11-11, about 7 s |
 | `.venv/bin/python code/figure-reproduction/fig04_s3_sff_goe_binned.py` | repository root | `RESULT: PASS` | 2026-11-11, about 7 s |
 | `.venv/bin/python code/figure-reproduction/check_s3_regeneration.py june` | repository root | `RESULT: PASS` | 2026-11-11, 513 s, largest difference $4.5\times10^{-13}$. The November ensemble, regenerated with the same code, matched to $4.0\times10^{-13}$. |

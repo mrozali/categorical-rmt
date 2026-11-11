@@ -1,0 +1,50 @@
+cff-version: 1.2.0
+message: "If you use this repository, please cite the paper given under preferred-citation."
+title: "Categorical RMT: companion repository"
+type: software
+authors:
+  - family-names: "Cui"
+    given-names: "Chuanxin"
+    affiliation: "University of British Columbia"
+  - family-names: "Jensen"
+    given-names: "Kristan"
+    affiliation: "University of Victoria"
+  - family-names: "Pal"
+    given-names: "Sridip"
+    affiliation: "Institut des Hautes Etudes Scientifiques and Tata Institute of Fundamental Research"
+  - family-names: "Rozali"
+    given-names: "Moshe"
+    affiliation: "University of British Columbia"
+version: "1.0.1"
+date-released: "2026-11-11"
+license: CC-BY-4.0
+repository-code: "https://github.com/mrozali/categorical-rmt"
+abstract: "Companion repository for the paper Categorical RMT (arXiv:2611.13093), released with the Agentic Publication Protocol. It contains the paper source, the exact-diagonalization code and stored spectra for the chaotic Fibonacci anyon chain and the disordered S3 qutrit chain, and scripts that reproduce the paper's figures and tables and check its numerical statements."
+keywords:
+  - "random matrix theory"
+  - "quantum chaos"
+  - "non-invertible symmetry"
+  - "tube algebra"
+  - "anyon chains"
+  - "2d CFT"
+  - "AdS3 gravity"
+  - "SymTFT"
+  - "spectral form factor"
+preferred-citation:
+  type: article
+  title: "Categorical RMT"
+  authors:
+    - family-names: "Cui"
+      given-names: "Chuanxin"
+    - family-names: "Jensen"
+      given-names: "Kristan"
+    - family-names: "Pal"
+      given-names: "Sridip"
+    - family-names: "Rozali"
+      given-names: "Moshe"
+  year: 2026
+  url: "https://arxiv.org/abs/2611.13093"
+  identifiers:
+    - type: other
+      value: "arXiv:2611.13093"
+      description: "arXiv identifier"

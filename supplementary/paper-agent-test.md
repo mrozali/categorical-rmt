@@ -4,46 +4,31 @@ This file is secondary context. It records a test of how an AI agent that opens 
 
 ## How the test was run
 
-On 2026-11-11 a fresh agent (Claude, Sonnet model, as a general-purpose coding agent) was given a clean copy of this repository as its working directory and nothing else: no conversation history, no access to files outside the copy, and no virtual environment. It was told to start from `AGENTS.md`, to set up the environment from the repository's own docs if it needed to run code, and not to start any computation the docs describe as heavy or longer than a couple of minutes. It then answered ten reader questions. Its answers were checked against the paper by the agent that prepared the repository (Claude, Opus model). Every value and line reference it quoted was confirmed.
+On 2026-11-11 a fresh agent (Claude, Sonnet model, as a general-purpose coding agent) was given a clean copy of this repository as its working directory and nothing else: no conversation history, no access to files outside the copy, and no virtual environment. It was told to start from `AGENTS.md`, to set up the environment from the repository's own docs if it needed to run code, and not to start any computation the docs describe as heavy or longer than a couple of minutes. It then answered twelve reader questions. Its answers were checked against the paper by the agent that prepared the repository (Claude, Opus model).
 
-The repository tested was the release candidate, which differs from the published version only by this file and `validation-report.md`.
+The repository tested was the release candidate of version 1.0.1. It differs from the release only by this file and `validation-report.md`. Earlier tests of the same kind, on earlier candidates, gave the same answers to the questions they shared.
 
-**Setup it performed.** It read `AGENTS.md`, `code/figure-reproduction/README.md`, `environment/README.md`, `data/README.md` and `paper/README.md`. It then ran `python3.14 -m venv .venv` and `.venv/bin/pip install -r environment/requirements.txt`, which succeeded with the pinned versions.
+**Setup it performed.** It read `AGENTS.md`, `README.md`, `code/figure-reproduction/README.md`, `environment/README.md`, `paper/README.md`, `verify.sh` and `CITATION.cff`. It then ran `python3.14 -m venv .venv` and `.venv/bin/pip install -r environment/requirements.txt`, which installed the pinned versions.
 
-**Commands it ran,** all from the repository root, all ending `RESULT: PASS`:
-- `fig07_fib_sectors_L26.py`
-- `check_fib_isospectrality.py`
-- `check_fib_generators_smallL.py`
-- `s3_from_stored_ensembles.py`
+**Commands it ran,** all from the repository root:
+- `.venv/bin/python code/figure-reproduction/fig07_fib_sectors_L26.py`
+- `.venv/bin/python code/figure-reproduction/check_fib_isospectrality.py`
+- `.venv/bin/python code/figure-reproduction/s3_from_stored_ensembles.py`
+- `./verify.sh`
 
-All four are in `code/figure-reproduction/` and were run with `.venv/bin/python`.
+All ended with `RESULT: PASS` or, for `verify.sh`, `0 failed`.
 
 ## Questions and answers
 
-The answers are given as the agent gave them, lightly shortened. The commands and their key output lines are kept.
+The answers are given as the agent gave them, shortened. The key output lines are kept.
 
 **1. What in this repository should I treat as authoritative, and what is only secondary context?**
 
-> The paper, the code and the data are the ground truth. Secondary context is everything else.
->
-> Authoritative:
-> - `paper/categorical_rmt.tex` is the canonical source, and `paper/categorical_rmt.pdf` is compiled from it. Its equation and section labels (for example `eq:catrmtintro`, `sec:fibnum`) are the stable anchors.
-> - `code/fib/` and `code/s3/python/` hold the exact-diagonalization programs.
-> - `code/figure-reproduction/README.md` is the authoritative map from every figure and table to its command and status.
-> - `data/` holds the cached spectra, and `data/README.md` gives their labels and provenance.
-> - `environment/README.md` is the source of truth for setup.
->
-> Secondary:
-> - `supplementary/analytic-checks.md` is a consistency check made for the authors, not part of the paper.
-> - `paper/README.md` records the differences from arXiv v1.
->
-> Not included: the companion paper on categorical eigenstate thermalization (`Jensen:2026cat`) and its data, the authors' June plotting script, and some internal notes named in code comments.
->
-> Keep three kinds of support apart. The sector structure, the symmetry classes and Tables 2 and 3 are analytic. The lattice results are finite-size numerics. The CFT predictions are not tested directly, and the holography reaches the ramp but not the plateau.
+> The paper, the code and the data are the ground truth: `paper/categorical_rmt.tex` (with its PDF), `code/fib/` and `code/s3/python/`, the figure map `code/figure-reproduction/README.md` and its scripts, and `data/` with `data/README.md`. `environment/README.md` is the source of truth for setup. Secondary: `supplementary/analytic-checks.md`, a consistency check made for the authors, the validation records in `supplementary/`, and the change note `paper/README.md`. Not included: the companion paper on categorical eigenstate thermalization and its data, the authors' June plotting script, and some internal notes named in code comments. Keep three kinds of support apart. The sector structure, the symmetry classes and Tables 2 and 3 are analytic. The lattice results are finite-size numerics. The CFT predictions are not tested directly, and the holography reaches the ramp but not the plateau.
 
 **2. In one paragraph, what is the paper's main claim, and what does it predict that ordinary symmetry-resolved random matrix theory would not?**
 
-> The paper proposes "categorical RMT". For a local chaotic system on a circle with ordinary or non-invertible symmetry, the independent random-matrix blocks are the irreducible sectors of the tube algebra, not the twisted Hilbert spaces. The Hamiltonian on each multiplicity space, restricted to any further unitary symmetry such as momentum, is an ordinary Wigner-Dyson matrix whose class is fixed by the antiunitary symmetries that map the sector to itself, and distinct blocks are independent unless a symmetry relates them. For a group this reproduces ordinary symmetry-resolved RMT. The new content is for non-invertible symmetry: Hilbert spaces with different twists can share a sector, and hence part of their spectrum, level by level, even though no invertible symmetry relates them. In the Fibonacci chain the untwisted and τ-twisted chains are different Hamiltonians on spaces of different dimension, yet W₋ and the twisted (τ,τ) have the same levels. Ordinary RMT would treat the two spaces as unrelated. The paper also predicts that in CFTs with U(1)_k or SU(2)_k symmetry the neutral spectrum can be GSE in a bosonic theory (Sec. 4, Tables 2 and 3), and that torus wormholes decorated by the SymTFT or Chern-Simons theory reproduce the ramp, with the GSE sectors showing the GOE slope. Evidence level: analytic for the structure and classes, numerical at finite size for the Fibonacci and S3 lattice checks (S3 is a group, so it is a check, not a new prediction), and the CFT predictions are not directly tested.
+> The paper proposes "categorical RMT". For a local chaotic system on a circle with an ordinary or non-invertible symmetry, the independent random-matrix blocks are the sectors of the tube algebra, not the twisted Hilbert spaces. The Hamiltonian on each multiplicity space, restricted to any further unitary symmetry such as lattice momentum, is an ordinary Wigner-Dyson matrix whose class is fixed by the antiunitary symmetries that map the sector to itself, and distinct blocks are independent unless a symmetry relates them (Sec. 2.2). For a group this reproduces symmetry-resolved RMT. For a non-invertible symmetry, Hilbert spaces with different twists can share a sector, and so part of their spectrum, level by level, although no invertible symmetry relates them. In the Fibonacci chain the untwisted W₋ block and the twisted (τ,τ) block are different Hamiltonians on spaces of different dimension, yet have identical levels. The paper also predicts GSE neutral sectors in bosonic CFTs with U(1)_k or SU(2)_k symmetry, and shows that decorated torus wormholes reproduce the ramp and its modular completion, though they cannot tell GOE from GSE.
 
 **3. The paper quotes mean gap ratios ⟨r⟩ for the five Fibonacci blocks at L=26. Can you check them from what is here, and tell me what you get?**
 
@@ -54,11 +39,11 @@ The answers are given as the agent gave them, lightly shortened. The commands an
   W1: 0.530853 +- 0.0009  rounds to 0.5309, expected 0.5309  ok
   W2: 0.530572 +- 0.0008  rounds to 0.5306, expected 0.5306  ok
   W3: 0.530572 +- 0.0008  rounds to 0.5306, expected 0.5306  ok
-pixel check (50 dpi ...): max diff 0.0000, fraction of differing pixels 0.00000
+pixel check (50 dpi, ...): max diff 0.0000, fraction of differing pixels 0.00000
 RESULT: PASS
 ```
 
-> Yes, from the cached L=26 spectra (reproduced from cached spectra, not recomputed). I get W₊ = 0.5292 ± 0.0014, W₋ = 0.5309 ± 0.0009, twisted (τ,τ) = 0.5309 ± 0.0009, (τ,1) = 0.5306 ± 0.0008 and (1,τ) = 0.5306 ± 0.0008. These match Sec. 2.5.2 to the printed four decimals, and all lie within about 1 SEM of ⟨r⟩_GOE = 0.5307. The Fig. 7 render is pixel-identical to the paper's figure. W₋ and (τ,τ) coincide exactly because they are the same spectra (see Q4).
+> Yes, from the cached spectra (not a fresh diagonalization). The five values match Sec. 2.5.2 to the four printed decimals and lie close to ⟨r⟩_GOE = 0.5307. The identical values for W₋ and (τ,τ), and for (τ,1) and (1,τ), reflect the level-by-level coincidences. The redrawn Fig. 7 has 0 differing pixels against the paper's figure.
 
 **4. Sec. 2.5.2 gives a numerical bound on how closely the shared-sector levels coincide. Does the data support it?**
 
@@ -67,13 +52,9 @@ RESULT: PASS
 (i)  W-(k) vs (tau,tau)(m=5k), 12 pairs: max|dE| = 1.066e-14   (paper states 7e-14)
 (ii) (tau,1)(m) vs (1,tau)(130-m), 26 pairs: max|dE| = 6.484e-14 at pair m=97/33   (paper states 7e-14)
 RESULT: PASS
-.venv/bin/python code/figure-reproduction/check_fib_generators_smallL.py
-W-(k) vs (tau,tau)(m=5k): 6 pairs, max|dE| = 5.329e-15
-(tau,1)(m) vs (1,tau)(70-m): 14 pairs, max|dE| = 6.217e-15, worst pair m=17/53
-RESULT: PASS
 ```
 
-> Yes. The paper says the coincidences hold "to within 7×10⁻¹⁴". The cached L=26 spectra give 1.07×10⁻¹⁴ over the 12 W₋/(τ,τ) pairs and 6.48×10⁻¹⁴ over the 26 (τ,1)/(1,τ) pairs, both below the bound, with little margin for the second. These are coincidences at machine precision. arXiv v1 said 2×10⁻¹⁴, which the data exceed, and the version here corrects it. This is a check on cached spectra, not a fresh L=26 computation. The L=14 run of the same two generator programs also coincides, which supports the generators but is a smaller size than the paper's claim.
+> Yes. Both families lie below the stated 7×10⁻¹⁴, the second with about 8% to spare. arXiv v1 stated 2×10⁻¹⁴, which the second family exceeds, and `paper/README.md` records the correction. This is machine-precision agreement of the stored eigenvalues. The L=14 check of the same programs gives about 5×10⁻¹⁵ and 6×10⁻¹⁵ with fresh spectra, but the paper's claim is at L=26.
 
 **5. Can I reproduce Table 1 (the S3 gap ratios) from this repository? If so, do it and tell me how it compares.**
 
@@ -86,11 +67,11 @@ RESULT: PASS
 RESULT: PASS
 ```
 
-> Yes, from the stored June spectra (`data/s3/S3_rep_category_L8_spectra.npz`), in seconds. Every ⟨r⟩ and standard error equals the paper's Table 1 to the four printed decimals. Six sectors are GOE (about 0.526 to 0.530) and ([c],ω), ([c],ω²) are GUE at 0.5956. The same run shows the Θ pair's spectra coinciding to 3.3×10⁻¹³, C_AB = 1.0000 for the pair and at most 0.024 for the other 27 pairs, and reproduces Figs. 5 and 6 from the November ensemble. This confirms the table from the stored spectra, not by fresh diagonalization. The docs report a regeneration check (`check_s3_regeneration.py june`, about 9 minutes, matching to 4.5×10⁻¹³) that I did not run because it exceeds my time limit.
+> Yes, from the stored June ensemble in about 7 s. Every ⟨r⟩ and standard error equals the paper's to the four printed decimals, six sectors GOE and the pair ([c],ω), ([c],ω²) GUE. The same run reproduces Figs. 3, 5 and 6 (Fig. 6 pixel-identical, Fig. 5 differing only by anti-aliasing). I did not run the 9-minute regeneration from the seeds, which the repository records as passing.
 
 **6. Are Table 1 and Figs. 3 to 6 all computed from the same disorder realizations?**
 
-> No. Sec. 2.4.3 says "two independent sets of 120 disorder realizations each. Table 1 and Figs. 3 and 4 use the first set, and Figs. 5 and 6 the second." In the repository the first set is the June ensemble (`data/s3/S3_rep_category_L8_spectra.npz`, seeds `default_rng(20248601 + r)`), and the second is the November ensemble (`data/s3/ensemble_L8_n120.npz`, seeds `20261103 + r`). The script compares them: the largest ⟨r⟩ difference is 1.5 combined standard errors, and C_AB stays below 0.03 in both. arXiv v1 described a single set. The June file records no seeds, and its seed rule comes from the authors' earlier script, which is not included.
+> No, and Sec. 2.4.3 says so: there are two independent sets of 120 realizations at L=8. The June ensemble (`data/s3/S3_rep_category_L8_spectra.npz`, seeds `default_rng(20248601 + r)`) gives Table 1 and Figs. 3 and 4. The November ensemble (`data/s3/ensemble_L8_n120.npz`, seeds `20261103 + r`) gives Figs. 5 and 6. Their gap ratios agree within 1.5 combined standard errors, and in both the off-diagonal C_AB stay below 0.03. arXiv v1 described a single set. The June file records no seeds, and its seed rule comes from an earlier script that is not included.
 
 **7. Is the footnote's statement about how far the S3 gap ratios lie below the RMT benchmarks right?**
 
@@ -98,26 +79,47 @@ RESULT: PASS
 offset below the RMT benchmark, in standard errors: 1.5 to 5.3 from the unrounded values, 1.5 to 5.7 from the rounded Table 1 entries   (paper footnote: 1.5 to 5.3, arXiv v1: 1.5 to 5.7)
 ```
 
-> Yes, for the version in this repository: from the unrounded values the offsets span 1.5 to 5.3 standard errors. The 5.7 in arXiv v1 comes from the rounded entry of ([c],ω), (0.5996 − 0.5956)/0.0007. The footnote's explanation, weak disorder breaking reflection only slightly, is the authors' suggestion ("a plausible source") and is not tested here.
+> Yes, in this version: the unrounded values give exactly 1.5 to 5.3. arXiv v1 said 5.7, from the rounded ([c],ω) entry. The footnote's explanation, weak disorder breaking reflection only slightly, is the authors' suggestion and is not tested here.
 
 **8. Why can a neutral sector have symplectic (GSE) statistics in a bosonic CFT with U(1)_k symmetry? Point me to where the paper shows this.**
 
-> This is derived analytically, not tested numerically. The class is set by the square of the antiunitary CRT on the neutral multiplicity space, and the theory is bosonic, so CRT² = +1 on the whole Hilbert space. CRT factorizes as CRT_V ⊗ CRT_V̄ ⊗ CRT_M, so CRT_M² = ε_L ε_R with ε_L = CRT_V² and ε_R = CRT_V̄² (eq. `equ:CRTV-CRTM`, Sec. 4.3). If the two current modules have opposite signs, the neutral part squares to −1 and is GSE, with every neutral level an exact Kramers pair. For U(1)_k (Sec. 4.4.2), the ground states |k⟩ and |−k⟩ of the charge-k module are related by the spectral-flow vertex operator, which has spin k, and CRT maps a bosonic operator of spin s to (−1)^s times its Hermitian conjugate (eq. `equ:CRT_SF_opt`). This gives CRT_V² = (−1)^k on V_[k], so the sectors (k,0) and (0,k) mod 2k with k odd are GSE (Table 2, `table:U1_classes`). For SU(2)_k the analogue is the modules with half-integer j_L + j_R (Table 3). On the holographic side (Sec. 5), the torus wormhole gives these sectors the GOE slope 1/π, equal to the GSE slope 1/(4π) × 2² once each Kramers pair is counted twice, so the wormhole cannot tell GOE from GSE. No numerical test exists, since the paper says no chaotic irrational CFT is under enough control.
+> On a self-conjugate sector CRT factorizes as CRT_V ⊗ CRT_V̄ ⊗ CRT_M, and the class is set by CRT_M². In a bosonic theory CRT² = +1, so CRT_M² = ε_L ε_R with ε_L = CRT_V² and ε_R = CRT_V̄² (`equ:CRTV-CRTM`). In Sec. 4.4.2 the charge-k module contains |k⟩ and |−k⟩, related by the spectral-flow operator of spin k. CRT maps a bosonic operator of spin s to (−1)^s times its conjugate (`equ:CRT_SF_opt`), which gives CRT_V² = (−1)^k. For (k,0) or (0,k) with k odd the product is −1, so the neutral block is GSE with Kramers pairs (Table 2). The SU(2)_k analogue, half-integer j_L+j_R, is Table 3. The torus wormhole gives these sectors the GOE slope, equal to the GSE slope with Kramers pairs counted twice, so holography cannot tell them apart. This is an analytic derivation, not tested numerically.
 
 **9. I want to recompute the L=26 Fibonacci spectra from scratch on my laptop. What will that take?**
 
-> It is not feasible on a laptop, so I did not attempt it. The figure map marks it `blocked-heavy-compute`. The untwisted Hilbert space has 271,443 states and the twisted one 439,204, and every momentum block of up to about 7600 levels is diagonalized densely. The original runs were cluster jobs (Fir, Digital Research Alliance of Canada, July 2026): one untwisted job, `fib_eth_lowmem.py 26 1.25`, and 78 twisted jobs, `FIB_PER_BLOCK=1 fib_eth_twisted_lowmem.py 26 1.25 <block index>`, each requesting 48 cores, 150 GB of memory and a six-hour limit. `extract_fib_L26_spectra.py` then rebuilds the cached file. What fits on a laptop: the same programs at L=14 in seconds (`check_fib_generators_smallL.py`, which I ran, see Q4), and L=20 for the twisted program in about 200 s on the tested Mac, per the docs.
+> It is not feasible on a laptop, and the repository marks it `blocked-heavy-compute`. The untwisted space has 271,443 states and the twisted one 439,204, with dense diagonalization of blocks up to about 7,600 levels. The original runs were one untwisted job and 78 twisted jobs on the Fir cluster, each twisted job requesting 48 cores, 150 GB and six hours. What fits on a laptop: the same programs at L=14 in seconds (`check_fib_generators_smallL.py`), and the twisted program at L=20 in about 200 s per the docs.
 
 **10. I have the arXiv v1 PDF. Is the paper in this repository the same, and if not, what changed?**
 
-> No. Per `paper/README.md`, this is the authors' revised version, prepared on 2026-11-11 for the second arXiv version, and it differs from v1 only by minor corrections, with the same section numbers. Changes:
-> 1. The missing reference `Pal:2020wwd`, which showed as `[?]` in a footnote to Sec. 2.2 of v1.
-> 2. Sec. 2.5.2: the coincidence bound is now 7×10⁻¹⁴, where v1 said 2×10⁻¹⁴ (my Q4 run gives 6.484×10⁻¹⁴).
-> 3. Sec. 2.4.3: a new sentence says Table 1 and Figs. 3 and 4 use one set of 120 realizations and Figs. 5 and 6 a second (confirmed in the source).
-> 4. Table 1 footnote: 1.5 to 5.3 standard deviations, where v1 had 5.7 (my Q7 run confirms both numbers).
-> 5. Typos in Secs. 2.5, 4.1, 4.3, 4.4.2, 5.1 and 6.
+> Not identical. Per `paper/README.md`, this is the authors' revised version for the second arXiv version, with the same section numbers and these changes:
+> 1. the reference `Pal:2020wwd`, which showed as `[?]` in v1,
+> 2. the bound in Sec. 2.5.2, now 7×10⁻¹⁴ instead of 2×10⁻¹⁴,
+> 3. a new sentence in Sec. 2.4.3 on the two sets of realizations,
+> 4. the footnote range, now 1.5 to 5.3 instead of 5.7,
+> 5. typos in Secs. 2.5, 4.1, 4.3, 4.4.2, 5.1 and 6.
 >
-> To verify against your v1 PDF, compare items 2, 3 and 4 first, since they are the substantive ones.
+> I confirmed items 2, 3 and 4 from the source and the scripts.
+
+**11. Is there a single command that checks everything that can be checked quickly? Run it and tell me the result.**
+
+```
+./verify.sh
+verify.sh quick, interpreter .venv/bin/python
+OK    s3_selftest (0 s)
+OK    fig07_fib_sectors_L26 (1 s)
+OK    check_fib_isospectrality (0 s)
+OK    check_fib_generators_smallL (5 s)
+OK    fig09_u1_threshold_check (0 s)
+OK    s3_from_stored_ensembles (6 s)
+OK    fig04_s3_sff_goe_binned (5 s)
+0 failed
+```
+
+> Yes, `./verify.sh` from the repository root: 0 failures in about 15 s. It covers Fig. 7 and the five ⟨r⟩ values, the isospectrality bounds, the L=14 generator check, Fig. 9, Table 1, and Figs. 3 to 6. It does not cover the L=26 recomputation, the fresh S3 diagonalization (`./verify.sh full` adds it), the analytic results or the schematics. Fig. 4 passes its own checks but is `runs-but-differs` against the paper's image.
+
+**12. How should I cite this work?**
+
+> Cite the paper, with the BibTeX entry given in `AGENTS.md` and `README.md` (key `Cui:2026catrmt`, arXiv 2611.13093, hep-th). `CITATION.cff` carries the same paper as its preferred citation and describes the repository itself, version 1.0.1, under CC BY 4.0.
 
 ## Assessment
 
@@ -126,12 +128,14 @@ offset below the RMT benchmark, in standard errors: 1.5 to 5.3 from the unrounde
 | 1 | ground truth and secondary material | correct |
 | 2 | main claim, and what is new beyond ordinary RMT | correct |
 | 3 | headline Fibonacci numbers from the cached data | ran the check, reported the observed values |
-| 4 | the isospectrality bound | ran both checks, reported the observed values and the margin |
-| 5 | Table 1 | ran the check, every row equal, separated "from stored spectra" from "fresh computation" |
+| 4 | the isospectrality bound | ran the check, reported the observed values and the margin |
+| 5 | Table 1 | ran the check, every row equal, separated stored spectra from a fresh computation |
 | 6 | provenance of the S3 figures | correct, both ensembles identified |
-| 7 | the footnote's range | ran the check, reported both the corrected and the v1 value |
-| 8 | analytic derivation, with paper anchors | correct, labels and sections verified |
+| 7 | the footnote's range | correct. In its full answer it mixed units when quoting the largest offset, though the footnote's comparison it was checking holds. |
+| 8 | analytic derivation, with paper anchors | correct, labels verified. It called Sec. 4.3 "Sec. 4.4" once. |
 | 9 | heavy computation | warned, did not run it, offered the small-size runs |
-| 10 | relation to arXiv v1 | correct. One overstatement in the full answer: it said none of the changes alter a claim, while items 2 and 4 correct stated numbers. |
+| 10 | relation to arXiv v1 | correct |
+| 11 | the one-command check | ran it, 0 failed, and stated what it does not cover |
+| 12 | citation | correct |
 
 The agent answered from the files in the repository, used commands that run from its root, reported observed values for every numerical question, and stated each limitation the docs record.

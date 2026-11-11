@@ -14,7 +14,7 @@ authors:
     github: "mrozali"
 arxiv_id: "2611.13093"
 paper_format: "latex"
-version: "1.0.0"
+version: "1.0.1"
 domain: "hep-th"
 tags: ["random matrix theory", "quantum chaos", "non-invertible symmetry", "tube algebra", "anyon chains", "2d CFT", "AdS3 gravity", "SymTFT", "spectral form factor"]
 recommended_external_skills: []
@@ -51,6 +51,7 @@ The proposal is confirmed in a chaotic Fibonacci anyon chain and checked in chao
 - `data/README.md`, `data/fib/` and `data/s3/` — the $L=26$ Fibonacci spectra and the two stored $S_3$ ensembles, with their labels and provenance.
 - `code/README.md`, `code/fib/` and `code/s3/` — the exact-diagonalization code for the Fibonacci chain, and the $S_3$ code with its own guide.
 - `environment/README.md` — tested platform, pinned packages, setup commands and the `.venv/bin/python` runner.
+- `verify.sh` — runs every check that works from the stored data in one command, in about half a minute (`./verify.sh full` adds the 9-minute regenerations).
 - `supplementary/analytic-checks.md` — which analytic statements were re-derived, and which were not.
 - `supplementary/validation-report.md` and `supplementary/paper-agent-test.md` — the APP validation record, and a test of how an agent answers readers from this repository.
 - `LICENSE` — CC BY 4.0 for the whole repository.

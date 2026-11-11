@@ -1,18 +1,19 @@
 # Validation report
 
-This file is secondary context. It records the full validation of this repository against the Agentic Publication Protocol (APP) 1.1.0 before its first release.
+This file is secondary context. It records the full validation of this repository against the Agentic Publication Protocol (APP) 1.1.0, for release 1.0.1. Release 1.0.0 had the same paper, code and data. Release 1.0.1 adds `CITATION.cff`, `verify.sh` and a GitHub Actions workflow.
 
 - **Stage:** full.
 - **Result:** passed.
 - **Date:** 2026-11-11.
 - **Validated by:** Claude (Anthropic, Opus model), working for the authors. The paper-agent test used a separate fresh agent (Sonnet model).
-- **Release:** `mrozali/categorical-rmt`, tag `v1.0.0`, version `1.0.0`.
+- **Release:** `mrozali/categorical-rmt`, tag `v1.0.1`, version `1.0.1`.
 - **Paper:** arXiv 2611.13093. The source in `paper/` is the authors' revised version for the second arXiv version (see `paper/README.md`).
 
 ## Checks passed
 
 **Structure.**
-- The top level holds only `paper/`, `code/`, `data/`, `environment/`, `supplementary/`, `AGENTS.md`, `CLAUDE.md` (`@AGENTS.md`), `README.md`, `LICENSE` and `.gitignore`.
+- The top level holds `paper/`, `code/`, `data/`, `environment/`, `supplementary/`, `AGENTS.md`, `CLAUDE.md` (`@AGENTS.md`), `README.md`, `LICENSE`, `.gitignore`, `.github/workflows/verify.yml`, `CITATION.cff` and `verify.sh`. The last two sit at the root by convention. `verify.sh` is the one-command entry point to the checks.
+- `CITATION.cff` is valid under the Citation File Format schema 1.2.0 (checked with `cffconvert --validate`).
 - There is one canonical paper source, `paper/categorical_rmt.tex`, declared as `latex` in the `AGENTS.md` frontmatter.
 - No hidden, cached or generated files are committed. Script outputs, the virtual environment and caches are gitignored.
 
@@ -41,6 +42,7 @@ This file is secondary context. It records the full validation of this repositor
 | `fig04_s3_sff_goe_binned.py` | about 7 s |
 | `check_s3_regeneration.py june` | 513 s |
 | `code/s3/python/s3_chain.py` (self-test) | under a second |
+| `./verify.sh quick`, which runs the self-test and the first six scripts above | about 15 s, `0 failed` |
 
 The scripts without a path are in `code/figure-reproduction/`. The November $S_3$ ensemble was also regenerated with the same code and matched its stored file to $4.0\times10^{-13}$.
 
@@ -71,7 +73,7 @@ The scripts without a path are in `code/figure-reproduction/`. The November $S_3
 
 **License.** `LICENSE` is the CC BY 4.0 legal code, verbatim, and covers the paper, code, data and supplementary material.
 
-**Paper-agent test.** A fresh agent with only this repository answered ten reader questions, recorded in `paper-agent-test.md`. It set up the environment from the docs, ran four checks, and reported observed values for every numerical question. It also stated each limitation that the docs record. All ten answers were correct.
+**Paper-agent test.** A fresh agent with only this repository answered twelve reader questions, recorded in `paper-agent-test.md`. It set up the environment from the docs, ran three checks and `./verify.sh`, and reported observed values for every numerical question. It also stated each limitation that the docs record. All twelve answers were correct.
 
 ## Limits recorded, not blockers
 
@@ -82,4 +84,4 @@ The scripts without a path are in `code/figure-reproduction/`. The November $S_3
 
 ## Public-release blockers
 
-None for APP compliance. Release still requires the authors' approval, a public repository, the tag and the release manifest.
+None for APP compliance. The authors approved release 1.0.0 on 2026-11-11, and release 1.0.1 adds no change to the paper, code or data.

@@ -2,7 +2,7 @@
 
 This file maps every figure and table of `paper/categorical_rmt.tex` to the command that regenerates or checks it. Statuses use the terms of the Agentic Publication Protocol.
 
-**Conventions.** Commands run from the repository root with the interpreter set up in `environment/README.md`, for example `.venv/bin/python code/figure-reproduction/fig07_fib_sectors_L26.py`. Each script writes only to `code/figure-reproduction/generated/`, which is not committed. Each script prints a short summary that ends with `RESULT: PASS` or `RESULT: FAIL`.
+**Conventions.** Commands run from the repository root with the interpreter set up in `environment/README.md`, for example `.venv/bin/python code/figure-reproduction/fig07_fib_sectors_L26.py`. Each script writes only to `code/figure-reproduction/generated/`, which is not committed. Each script prints a short summary that ends with `RESULT: PASS` or `RESULT: FAIL`. `./verify.sh` at the repository root runs every script that works from the stored data, in about half a minute.
 
 `s3_from_stored_ensembles.py` is a grouped wrapper. It runs `code/s3/python/run_paper_numerics.py` on both stored $S_3$ ensembles, in about 7 s, and covers Table 1 and Figs. 3, 5 and 6. Its outputs are `generated/s3_june/` and `generated/s3_nov/`, each holding `table1_gap_ratios.json` and `.png`, `fig3_spacing.png`, `fig4_sff_GOE.png`, `fig5_sff_GUE.png`, `fig6_correlation_matrix.png`, `numerics_summary.json` and `redraw_log.txt`. The paper uses Table 1 and Fig. 3 from `s3_june/`, and Figs. 5 and 6 from `s3_nov/`.
 

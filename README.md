@@ -39,7 +39,7 @@ python3.14 -m venv .venv
 .venv/bin/python code/figure-reproduction/fig07_fib_sectors_L26.py
 ```
 
-The last command redraws Fig. 7 from the cached spectra in a few seconds and prints the gap ratios quoted in Sec. 2.5.2.
+The last command redraws Fig. 7 from the cached spectra in a few seconds and prints the gap ratios quoted in Sec. 2.5.2. `./verify.sh` runs all such checks in one go, in about half a minute, and GitHub Actions runs it on every push.
 
 ### Run figures
 
@@ -56,6 +56,8 @@ Each $S_3$ ensemble can be recomputed from its seeds on a laptop in about 10 min
 [`data/README.md`](data/README.md) describes the cached spectra, their block labels and how they were made. No download is needed.
 
 ## Citation
+
+Please cite the paper. `CITATION.cff` holds the same information in machine-readable form.
 
 ```bibtex
 @article{Cui:2026catrmt,
