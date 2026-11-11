@@ -1,0 +1,487 @@
+% DOCUMENTATION.tex : user guide for the Python code of the S3 qutrit chain.
+% LaTeX version of DOCUMENTATION.md, with the same content. Compile with pdflatex.
+\documentclass[11pt,a4paper]{article}
+
+%---------------------------------------------------------------- fonts and layout
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[varqu,varl,scaled=0.95]{inconsolata}
+\usepackage{amsmath,amssymb}
+\usepackage[a4paper,margin=2.3cm,headheight=14pt]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{array,booktabs,tabularx}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{multicol}
+\usepackage{needspace}
+\usepackage{titletoc}
+\usepackage{etoolbox}
+\usepackage{listings}
+\usepackage[most]{tcolorbox}
+\usepackage{microtype}
+\DisableLigatures{encoding = *, family = tt*}
+
+%---------------------------------------------------------------- colours (matplotlib tab10, as in the paper's figures)
+\definecolor{tabblue}{HTML}{1F77B4}
+\definecolor{taborange}{HTML}{FF7F0E}
+\definecolor{tabgreen}{HTML}{2CA02C}
+\definecolor{tabred}{HTML}{D62728}
+\definecolor{tabpurple}{HTML}{9467BD}
+\definecolor{tabbrown}{HTML}{8C564B}
+\definecolor{tabgray}{HTML}{7F7F7F}
+\colorlet{accent}{tabblue!80!black}
+\colorlet{codeink}{tabred!60!black}
+\colorlet{codebg}{tabblue!4}
+\colorlet{codeframe}{tabblue!35}
+\colorlet{headbg}{tabblue!10}
+
+\usepackage[colorlinks=true,linkcolor=accent,urlcolor=tabblue,
+  pdftitle={S3 qutrit chain: Python code documentation},
+  pdfauthor={Categorical RMT supplementary code}]{hyperref}
+
+%---------------------------------------------------------------- paragraphs, lists, headings
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.55em plus 0.15em}
+\setlength{\emergencystretch}{2em}
+\setlist{itemsep=0.25em, topsep=0.2em, leftmargin=1.4em}
+\titleformat{\section}{\Large\bfseries\color{accent}}{\thesection}{0.7em}{}[{\color{accent!35}\titlerule[0.6pt]}]
+\titleformat{\subsection}{\large\bfseries\color{accent}}{\thesubsection}{0.7em}{}
+\setcounter{tocdepth}{1}
+\titlecontents{section}[1.6em]{\vspace{0.25em}}{\contentslabel{1.6em}}{\hspace*{-1.6em}}{\titlerule*[0.6pc]{.}\contentspage}
+\titlespacing*{\section}{0pt}{2.4ex plus 1ex minus .2ex}{1.2ex plus .2ex}
+\titlespacing*{\subsection}{0pt}{1.8ex plus 1ex minus .2ex}{0.6ex plus .2ex}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{tabgray}$S_3$ qutrit chain\enspace\textperiodcentered\enspace Python code}
+\fancyhead[R]{\small\color{tabgray}Documentation}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.3pt}
+% keep a heading together with what follows it
+\pretocmd{\section}{\needspace{10\baselineskip}}{}{}
+\pretocmd{\subsection}{\needspace{7\baselineskip}}{}{}
+\fancypagestyle{plain}{\fancyhf{}\fancyfoot[C]{\small\thepage}\renewcommand{\headrulewidth}{0pt}}
+
+%---------------------------------------------------------------- tables
+\setlength{\aboverulesep}{0pt}
+\setlength{\belowrulesep}{0pt}
+\renewcommand{\arraystretch}{1.35}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{R}[1]{>{\raggedleft\arraybackslash}p{#1}}
+
+%---------------------------------------------------------------- code
+\newcommand{\code}[1]{\texttt{\textcolor{codeink}{#1}}}
+\newcommand{\lead}[1]{\textbf{#1}\enspace}
+\newcommand{\example}[2]{\par\needspace{7\baselineskip}\medskip
+  {\color{accent}\bfseries Example #1.}\enspace\textbf{#2}\par\nopagebreak}
+
+\lstdefinestyle{doc}{
+  basicstyle=\ttfamily\footnotesize,
+  columns=fixed, basewidth=0.5em, keepspaces=true,
+  showstringspaces=false, upquote=true, tabsize=4,
+  breaklines=true, postbreak=\mbox{\textcolor{tabgray}{$\hookrightarrow$}\space},
+  commentstyle=\color{tabgreen!60!black},
+  stringstyle=\color{tabbrown},
+  keywordstyle=\color{tabblue!85!black}\bfseries,
+}
+\tcbset{codebox/.style={listing only, enhanced,
+  colback=codebg, colframe=codeframe, boxrule=0.4pt, arc=2pt,
+  left=6pt, right=6pt, top=1pt, bottom=1pt, before skip=0.5em, after skip=0.7em}}
+\lstdefinelanguage{shellplain}{morecomment=[l]{\#}, sensitive=true}
+\newtcblisting{shell}{codebox, listing options={style=doc, language=shellplain}}
+\newtcblisting{python}{codebox, listing options={style=doc, language=Python}}
+
+\date{11 November 2026}
+\makeatletter\let\thedate\@date\makeatother
+
+\begin{document}
+\thispagestyle{plain}
+
+%================================================================ title
+\begin{center}
+  {\color{accent}\rule{\linewidth}{1.2pt}}\par\vspace{1.4ex}
+  {\Huge\bfseries $S_3$ qutrit chain}\par\vspace{1.0ex}
+  {\Large Python code\enspace\textperiodcentered\enspace Documentation}\par\vspace{1.4ex}
+  {\normalsize Supplementary code for Section~2.4.3 of \textit{Categorical RMT}}\par\vspace{0.5ex}
+  {\small\color{tabgray}\thedate}\par\vspace{1.0ex}
+  {\color{accent}\rule{\linewidth}{1.2pt}}
+\end{center}
+
+This document explains how to run the Python code for Section~2.4.3 of ``Categorical RMT'' and how to change
+every setting. \code{README.md} gives the overview and the results. This file is the user guide. The same
+text is in \code{DOCUMENTATION.md}.
+
+\begin{multicols}{2}\raggedcolumns
+\makeatletter\@starttoc{toc}\makeatother
+\end{multicols}
+
+%================================================================ 1
+\section{Getting started}\label{sec:start}
+
+\lead{Requirements.} Python 3.9 or later, with numpy, scipy and matplotlib. If they are missing, install them with
+\begin{shell}
+python3 -m pip install numpy scipy matplotlib
+\end{shell}
+
+\lead{First check.} Run the self-test from any directory. It takes a fraction of a second and should end with
+\code{self-test passed}.
+\begin{shell}
+python3 s3_chain.py
+\end{shell}
+
+\needspace{9\baselineskip}
+\lead{The code in one picture.}\par
+\begingroup\small
+\begin{tabularx}{\linewidth}{L{4.6cm}Y}
+\toprule\rowcolor{headbg}\textbf{File} & \textbf{Role}\\\midrule
+\code{s3\_chain.py} & the model: $S_3$ group, Hamiltonian (2.23), disorder (2.24), sector bases (2.17)--(2.18)\\
+\code{spectral\_tools.py} & the diagnostics: unfolding, gap ratio, SFF (2.25), cross SFF (2.26), $C_{AB}$ (2.27)\\
+\code{run\_paper\_numerics.py} & the driver: builds an ensemble, runs every diagnostic, writes tables, figures and logs\\
+\code{export\_couplings.py} & writes the couplings of an ensemble to JSON for the Mathematica code\\
+\code{crosscheck\_export.py} & exports an ensemble for the cross-check with the Mathematica code\\
+\bottomrule
+\end{tabularx}\par
+\endgroup
+
+%================================================================ 2
+\section{Running the paper numerics}\label{sec:running}
+
+\subsection{The two runs behind the manuscript}\label{sec:tworuns}
+
+\begin{shell}
+python3 run_paper_numerics.py --seed-base 20248601     # June ensemble: Table 1, Figures 3 and 4
+python3 run_paper_numerics.py                          # November ensemble: Figures 5 and 6
+\end{shell}
+
+Each run builds 120 disorder realizations at $L = 8$, diagonalizes all eight sectors, and writes the results
+described in Section~\ref{sec:writes}. A run takes 13 to 19 minutes on an Apple M4.
+
+The regenerated Figure~4 uses the default time grid. The manuscript's Figure~4 averaged 400 log-spaced times from
+$10^{-1.7}$ to $10^{0.5}$ in 44 logarithmic bins, so its curves are smoother.
+
+\subsection{All options}\label{sec:options}
+
+The defaults reproduce the November run behind Figures~5 and~6. The window and the unfolding degree are the
+manuscript's values. The manuscript does not state the time grid or the band, so their defaults are those of
+Figures~5 and~6. Use \code{--seed-base 20248601} for Table~1 and Figures~3 and~4.
+
+\begingroup\small
+\begin{tabularx}{\linewidth}{L{4.0cm}L{2.0cm}Y}
+\toprule\rowcolor{headbg}\textbf{Option} & \textbf{Default} & \textbf{Meaning}\\\midrule
+\code{--nreal N} & 120 & number of disorder realizations, at least 2\\
+\code{--seed-base S} & 20261103 & realization $r = 0, \ldots, N-1$ uses \code{numpy.random.default\_rng(S + r)}\\
+\code{--L L} & 8 & chain length, at least 4\\
+\code{--fraction F} & 0.7 & central fraction of every spectrum used by all diagnostics\\
+\code{--degree D} & 8 & degree of the polynomial that unfolds the spectra\\
+\code{--times TMIN TMAX N} & 0.02 3 80 & $N\geq 2$ log-spaced times, in Heisenberg times, for the form factors\\
+\code{--band TMIN TMAX} & 0.1 1 & time band over which $C_{AB}$ is averaged, containing at least one grid time\\
+\code{--from-npz FILE} & & analyse a stored ensemble instead of computing one\\
+\code{--out DIR} & & write the outputs to DIR\\
+\bottomrule
+\end{tabularx}\par
+\endgroup
+
+With \code{--from-npz}, the options \code{--nreal}, \code{--seed-base} and \code{--L} are ignored, since the file
+fixes the ensemble. A value out of range stops the script with an error message and exit code 1, before any work.
+This includes \code{--L} below 4, \code{--nreal} below 2, a fraction outside $(0,1]$, and a band that contains no
+grid time. \code{python3 run\_paper\_numerics.py --help} prints the same list, with longer placeholder
+names. Options can be combined freely, for example
+\begin{shell}
+python3 run_paper_numerics.py --nreal 40 --L 7 --seed-base 1000 --fraction 0.5 --degree 6
+python3 run_paper_numerics.py --from-npz S3_rep_category_L8_spectra.npz --times 0.01 5 120 --band 0.2 2
+\end{shell}
+
+\subsection{What a run writes}\label{sec:writes}
+
+\begingroup\small
+\begin{tabularx}{\linewidth}{L{5.4cm}Y}
+\toprule\rowcolor{headbg}\textbf{File} & \textbf{Contents}\\\midrule
+\code{run\_log.txt} & everything the run printed (\code{redraw\_log.txt} for \code{--from-npz})\\
+\code{table1\_gap\_ratios.json}, \code{.png} & $\langle r\rangle$ per sector with its standard error, and a plot against the manuscript\\
+\code{fig3\_spacing.png} & $P(s)$ per sector against the Wigner surmises\\
+\code{fig4\_sff\_GOE.png} & connected SFF of the six GOE-class sectors\\
+\code{fig5\_sff\_GUE.png} & SFF and cross SFF of the $\Theta$ pair $([c],\omega)$, $([c],\omega^2)$\\
+\code{fig6\_correlation\_matrix.png} & the $8\times 8$ matrix $C_{AB}$\\
+\code{numerics\_summary.json} & the dimensions, Table~1, the $\Theta$ check, the $K_c/K_{\mathrm{RMT}}$ averages, the
+  cross-form-factor check, $C_{AB}$ and the settings used\\
+\code{ensemble\_L<L>\_n<N>.npz} & all sector spectra and couplings (not written for \code{--from-npz})\\
+\bottomrule
+\end{tabularx}\par
+\endgroup
+
+The log also prints the block dimensions, the $\Theta$ check, and $K_c/K_{\mathrm{RMT}}$ averaged over four bands of time.
+
+\subsection{Where the output goes}\label{sec:folders}
+
+\begin{itemize}
+  \item The default full run writes to \code{results/}.
+  \item A run that computes any other ensemble writes to a folder named after its non-default settings. For example,
+    \code{--nreal 10} writes to \code{results\_n10/}, and \code{--seed-base 20248601} to
+    \code{results\_n120\_seed20248601/}. Changing the analysis adds tags such as \code{\_frac0.5}, \code{\_deg6},
+    \code{\_t0.01-5-120} or \code{\_band0.2-2}.
+  \item \code{--from-npz FILE} with the default analysis writes next to FILE and replaces the tables and figures
+    already there. If FILE sits in this folder, it writes to \code{results\_<name>/} instead. Here \code{<name>} is
+    the file name without \code{.npz}.
+  \item \code{--from-npz FILE} with any other analysis writes to \code{results\_<name>\_<tags>/} in this folder. The
+    folder name does not record the folder of FILE. Two files of the same name therefore share it, so give
+    \code{--out} to keep them apart.
+  \item \code{--out DIR} overrides all of these.
+\end{itemize}
+The \code{results*/} folders are always created in this folder, wherever the command is run from. FILE and DIR
+are read relative to the current directory.
+
+\subsection{Run time}\label{sec:runtime}
+
+The cost is set by the largest sector block, which grows as $3^L$. Measured on an Apple M4:
+
+\begingroup\small
+\begin{tabular}{R{1.0cm}R{3.0cm}L{4.6cm}}
+\toprule\rowcolor{headbg}\textbf{$L$} & \textbf{largest block} & \textbf{time per realization}\\\midrule
+6 & 365 & 0.03\,s\\
+7 & 1094 & 0.25\,s\\
+8 & 3281 & 6 to 10\,s\\
+9 & 9842 & about 4\,min\\
+\bottomrule
+\end{tabular}\par
+\endgroup
+
+%================================================================ 3
+\section{Changing the analysis}\label{sec:analysis}
+
+Table~1, the spacing histograms, the form factors and $C_{AB}$ all use the same central window, so one option
+changes them everywhere. All except Table~1 also use the same unfolding.
+
+\lead{Spectral window.} \code{--fraction F} keeps the central fraction F of every spectrum, by level index.
+
+\lead{Unfolding.} \code{--degree D} fits the level staircase with a polynomial of degree D. The unfolded levels feed
+$P(s)$, the form factors and $C_{AB}$. $\langle r\rangle$ uses the raw gaps, so it does not depend on D.
+
+\lead{Time grid.} \code{--times TMIN TMAX N} sets the N log-spaced times, in Heisenberg times, of every time-domain
+diagnostic: Figures~4 and~5, the $K_c/K_{\mathrm{RMT}}$ averages in the log and $C_{AB}$. The four bands of those
+averages (0.02--0.05, 0.05--0.2, 0.2--1 and 1--3) and the range 0.2--3 of the cross-form-factor check are fixed. A
+band that the grid does not reach prints \code{nan}.
+
+\lead{Correlation band.} \code{--band TMIN TMAX} sets the time band over which $C_{AB}$ is averaged. The band must
+contain at least one grid time, otherwise the script stops with an error.
+
+To redo only the analysis of an existing ensemble, combine these options with \code{--from-npz}. This takes seconds.
+\begin{shell}
+python3 run_paper_numerics.py --from-npz results/ensemble_L8_n120.npz --fraction 0.5 --degree 6
+\end{shell}
+
+%================================================================ 4
+\section{Changing the model}\label{sec:model}
+
+\lead{Number of realizations and seeds.} Use \code{--nreal} and \code{--seed-base}. Realization $r = 0, \ldots, N-1$ uses
+\code{numpy.random.default\_rng(seed\_base + r)}, so the same options always give the same ensemble.
+
+\lead{Chain length.} Use \code{--L}. The manuscript's values in the log are for $L = 8$, so compare with them only there.
+
+\lead{Disorder strengths.} The means and widths of eq.~(2.24) are the dictionary \code{COUPLINGS} in \code{s3\_chain.py}:
+\begin{python}
+COUPLINGS = {"J": (1.00, 0.15), "f": (0.82, 0.12), "J2": (0.32, 0.08), "J3": (0.20, 0.06)}
+\end{python}
+Each entry is (mean, width), and every coupling is mean $+$ width $\times$ a standard normal number. To change them
+without editing the file, set them in a small script and call the driver from it. Put the script in this folder and
+run it with \code{python3}.
+\begin{python}
+import sys
+import s3_chain, run_paper_numerics
+
+s3_chain.COUPLINGS["J2"] = (0.0, 0.0)        # switch off the next-nearest-neighbour term
+s3_chain.COUPLINGS["f"] = (0.82, 0.30)       # stronger disorder in the transverse field
+sys.argv = ["run_paper_numerics.py", "--nreal", "20", "--out", "results_custom_disorder"]
+run_paper_numerics.main()
+\end{python}
+Always give \code{--out} in this case. No output records the means and widths, only the couplings drawn from them,
+which the \code{.npz} stores.
+
+\lead{Fixed couplings.} To study a single, chosen realization, such as the clean chain, build the Hamiltonian
+directly with your own arrays (see Section~\ref{sec:library}, Example~4).
+
+\lead{Twists.} The driver uses the representative twists $e$ = \code{(0,~1,~2)}, $\sigma$ = \code{(0,~2,~1)} and
+$r$ = \code{(1,~2,~0)}, which carry all eight sectors. Conjugate twists give the same spectra. \code{hamiltonian(L, h, ...)} accepts any
+twist $h$, but \code{sector\_basis} resolves sectors only for the three representatives. For another twist, use the
+full spectrum of $H_h$ (Section~\ref{sec:library}).
+
+%================================================================ 5
+\section{Stored ensembles}\label{sec:stored}
+
+\needspace{7\baselineskip}
+\lead{Formats read by \code{--from-npz}.}\par
+
+\begingroup\small
+\begin{tabularx}{\linewidth}{L{2.6cm}Y}
+\toprule\rowcolor{headbg}\textbf{Format} & \textbf{Arrays}\\\midrule
+this script & \code{spec\_<sector>} of shape (N, dim), \code{coup\_J}, \code{coup\_f}, \code{coup\_J2}, \code{coup\_J3},
+  \code{L}, \code{nreal}, \code{seed\_base}, \code{sectors}, \code{dims}, \code{numpy\_version}, \code{platform}\\
+June 2026 & one array \code{<code>\_\_<r>} per sector and realization, codes \code{e\_1}, \code{e\_sgn}, \code{e\_2},
+  \code{t\_+}, \code{t\_-}, \code{c\_1}, \code{c\_w}, \code{c\_w2}\\
+\bottomrule
+\end{tabularx}\par
+\endgroup
+
+The sector names of this code are \code{e1}, \code{esgn}, \code{e2}, \code{t+}, \code{t-}, \code{c1}, \code{cw},
+\code{cw2}, in the order of Table~1.
+
+\lead{Reading an ensemble yourself.}
+\begin{python}
+from run_paper_numerics import load_npz
+spec, seed_base, description, L = load_npz("S3_rep_category_L8_spectra.npz")
+print(description, L, spec["cw"].shape)       # spec[sector] has shape (realizations, levels)
+\end{python}
+
+\lead{Passing an ensemble to Mathematica.} \code{export\_couplings.py SEED\_BASE N OUT.json} writes the couplings
+of the $L = 8$ ensemble with that seed base, drawn with the current \code{COUPLINGS}. The Mathematica code rebuilds
+the same realizations from this file. \code{crosscheck\_export.py OUTDIR [--npz FILE]} writes an ensemble in this
+script's format in raw binary form for \code{crosscheck\_with\_python.wls}. By default it reads
+\code{results/ensemble\_L8\_n120.npz}. It also writes the Python values of the diagnostics at the default analysis
+settings.
+
+%================================================================ 6
+\section{Using the library in your own scripts}\label{sec:library}
+
+Save each example as a script in this folder and run it there, or paste it into a Python session started in this
+folder. From elsewhere, add the folder with \code{sys.path.insert(0, "<path to this folder>")} and give the full
+path of the \code{.npz} file. Each example runs in a few seconds.
+
+\example{1}{One realization at $L = 6$: sector sizes and $\langle r\rangle$.}
+\begin{python}
+import numpy as np
+from s3_chain import SECTORS, SECTOR_TWIST, digits, draw_couplings, hamiltonian, sector_basis, block
+from spectral_tools import gap_ratios
+
+L = 6
+dig = digits(L)
+J, f, J2, J3 = draw_couplings(L, np.random.default_rng(7))           # one realization of eq. (2.24)
+for s in SECTORS:
+    H = hamiltonian(L, SECTOR_TWIST[s], J, f, J2, J3, dig)            # twisted Hamiltonian (2.23)
+    levels = np.linalg.eigvalsh(block(H, sector_basis(L, s, dig)))    # spectrum of the sector block
+    print(f"{s:5s} {len(levels):5d} levels   <r> = {gap_ratios(levels).mean():.3f}")
+\end{python}
+
+\example{2}{Table 1 from the June file with a smaller window.}
+\begin{python}
+from run_paper_numerics import load_npz
+from spectral_tools import rbar_ensemble
+
+spec, _, _, L = load_npz("S3_rep_category_L8_spectra.npz")
+for s, levels in spec.items():
+    mean, sem, _, _ = rbar_ensemble(levels, frac=0.5)                 # central 50% instead of 70%
+    print(f"{s:5s} <r> = {mean:.4f} +- {sem:.4f}")
+\end{python}
+
+\example{3}{A form factor on your own time grid.}
+\begin{python}
+import numpy as np
+import matplotlib; matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+from run_paper_numerics import load_npz
+from spectral_tools import amplitudes, sff_connected, sff_rmt
+
+spec, _, _, L = load_npz("S3_rep_category_L8_spectra.npz")
+ts = np.logspace(-2, 0.5, 120)                                        # 120 times from 0.01 to 3.2 t_H
+Z, Ns = amplitudes(spec["cw"], ts, frac=0.7, deg=8)
+plt.loglog(ts, sff_connected(Z, Ns), "o-", ms=3, label="([c], omega)")
+plt.loglog(ts, sff_rmt(ts, "GUE"), "r-", label="GUE")
+plt.legend(); plt.savefig("sff_cw.png", dpi=120)
+\end{python}
+
+\example{4}{The clean chain, with fixed couplings.}
+\begin{python}
+import numpy as np
+from s3_chain import E, hamiltonian, sector_basis, block
+
+L = 6
+J, f = np.full(L, 1.00), np.full(L, 0.82)                             # uniform couplings, no disorder
+J2, J3 = np.full(L - 2, 0.32), np.full(L - 2, 0.20)
+H = hamiltonian(L, E, J, f, J2, J3)
+levels = np.linalg.eigvalsh(block(H, sector_basis(L, "e1")))
+print(len(levels), levels[:5])
+\end{python}
+A clean chain has extra symmetries, such as reflection, that this code does not resolve. Its level statistics
+are therefore not those of a single random matrix.
+
+%================================================================ 7
+\section{Reference}\label{sec:reference}
+
+\subsection{\texttt{s3\_chain.py}}
+
+\begingroup\small
+\begin{tabularx}{\linewidth}{L{6.4cm}Y}
+\toprule\rowcolor{headbg}\textbf{Name} & \textbf{Description}\\\midrule
+\code{E}, \code{SIGMA}, \code{R} & the twists $e$ = (0,1,2), $\sigma$ = (0,2,1), $r$ = (1,2,0), as tuples
+  ($g(0)$, $g(1)$, $g(2)$)\\
+\code{GROUP}, \code{mul(g, h)}, \code{inv(g)} & the six elements of $S_3$, composition (first $h$, then $g$), inverse\\
+\code{COUPLINGS} & (mean, width) of $J$, $f$, $J_2$, $J_3$ in eq.~(2.24)\\
+\code{draw\_couplings(L, rng)} & one realization: arrays $J$ ($L$), $f$ ($L$), $J_2$ ($L-2$), $J_3$ ($L-2$)\\
+\code{hamiltonian(L, h, J, f, J2, J3, dig=None)} & the twisted Hamiltonian $H_h$ of eq.~(2.23), sparse, real symmetric\\
+\code{SECTORS}, \code{SECTOR\_TWIST}, \code{SECTOR\_CLASS} & sector names, the twist each lives in, the predicted class\\
+\code{sector\_basis(L, sector, dig=None, route="row")} & orthonormal basis of the sector, sparse $3^L\times\mathrm{dim}$\\
+\code{block(H, B)} & the dense block $B^\dagger H B$\\
+\code{sector\_dimension\_formula(L, sector)} & the sector dimension from the character formula\\
+\code{digits(L)} & the $3^L\times L$ table of site labels (pass it as \code{dig} to save time)\\
+\code{U(L, g, dig=None)}, \code{centraliser(h)} & the permutation matrix of $g$, and the centralizer of $h$\\
+\code{selftest(L=5, seed=1)} & the self-test\\
+\bottomrule
+\end{tabularx}\par
+\endgroup
+
+\subsection{\texttt{spectral\_tools.py}}
+
+\begingroup\small
+\begin{tabularx}{\linewidth}{L{6.4cm}Y}
+\toprule\rowcolor{headbg}\textbf{Function} & \textbf{Description}\\\midrule
+\code{central\_window(n, frac=0.7)} & index range (lo, hi) of the central fraction of $n$ levels\\
+\code{unfold(E, deg=8, frac=0.7)} & unfolded levels of the central window, from a degree-\code{deg} fit of the full staircase\\
+\code{gap\_ratios(E, frac=0.7)} & adjacent-gap ratios $r_n$ from the raw gaps of the central window\\
+\code{rbar\_ensemble(spectra, frac=0.7)} & (mean $\langle r\rangle$, its standard error over realizations, pooled standard
+  error, number of ratios)\\
+\code{surmise(s, cls)} & Wigner surmise for \code{"Poisson"}, \code{"GOE"} or \code{"GUE"}\\
+\code{sff\_rmt(t, cls)} & connected SFF of the \code{"GOE"} or \code{"GUE"}, $t$ in Heisenberg times\\
+\code{amplitudes(spectra, ts, frac=0.7, deg=8)} & (Z, N): $Z[r,j]=\sum_n e^{-2\pi i\,\varepsilon_n t_j}$ for
+  realization $r$, and the level counts\\
+\code{sff\_connected(Z, Ns)} & connected SFF $K_c(t)/N$ of eq.~(2.25)\\
+\code{cross\_sff(ZA, NA, ZB, NB)} & cross form factor of eq.~(2.26)\\
+\code{corr\_matrix(Zs, Ns, ts, band)} & (sector names, $C_{AB}$ matrix of eq.~(2.27), number of band times)\\
+\code{R\_REF} & the large-matrix $\langle r\rangle$ of Poisson, GOE and GUE\\
+\bottomrule
+\end{tabularx}\par
+\endgroup
+
+\subsection{\texttt{run\_paper\_numerics.py}}
+
+\begingroup\small
+\begin{tabularx}{\linewidth}{L{6.4cm}Y}
+\toprule\rowcolor{headbg}\textbf{Name} & \textbf{Description}\\\midrule
+\code{main()} & the command-line driver of Section~\ref{sec:running}\\
+\code{make\_ensemble(nreal, seed\_base, path)} & builds and saves an ensemble at the module's chain length
+  \code{L}, returns (spectra, seed base)\\
+\code{load\_npz(path)} & reads a stored ensemble in either format, returns (spectra, seed base, description, $L$),
+  with seed base \code{None} for the June format\\
+\bottomrule
+\end{tabularx}\par
+\endgroup
+
+%================================================================ 8
+\section{Troubleshooting}\label{sec:trouble}
+
+\begin{itemize}
+  \item \lead{\code{ModuleNotFoundError: No module named 's3\_chain'}.} Python looks for modules next to the script it
+    runs. Put your script in this folder, or add the folder to \code{sys.path}.
+  \item \lead{The self-test passes under \code{python -O} without checking anything.} \code{-O} removes the
+    \code{assert} statements, which the self-test relies on. Run it with plain \code{python3}.
+  \item \lead{Spectra differ slightly on another machine.} Eigenvalues agree to about $10^{-12}$ across numpy and
+    LAPACK builds. The tables agree to the digits shown, and the images agree visually but not byte for byte.
+  \item \lead{A seeded run differs from a stored ensemble.} Regenerating from seeds relies on numpy's random stream,
+    which numpy does not formally guarantee across versions. The stored \code{.npz} files are the permanent record.
+  \item \lead{Large $L$ is slow or runs out of memory.} The largest block grows as $3^L$. $L = 9$ takes minutes per
+    realization, and $L = 10$ needs blocks of dimension about 30,000.
+  \item \lead{The log prints \code{nan} for a band.} The $K_c/K_{\mathrm{RMT}}$ averages and the cross-form-factor
+    check use fixed bands (Section~\ref{sec:analysis}), and the time grid does not reach this one. Extend
+    \code{--times}.
+\end{itemize}
+
+\end{document}
